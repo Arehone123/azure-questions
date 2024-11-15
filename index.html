@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Choice Questions</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto p-4">
+    <div class="bg-white shadow-md rounded-lg p-5">
+        <h1 class="text-2xl font-bold mb-4 text-center text-indigo-600">Multiple Choice Quiz</h1>
+        <div id="question-container">
+            <!-- Questions and options will be dynamically added here -->
+        </div>
+        <button id="submit-btn" class="btn btn-primary mt-4">Submit</button>
+        <div id="result" class="mt-4 hidden">
+            <h2 class="text-lg font-semibold text-green-500">Your Score: <span id="score"></span></h2>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script >
+    const questions = [
+        {
+            question: "Which Azure Resource Manager feature should you use before generating billing reports for each office?",
+            type: "single", // Single answer
+            options: ["Tags", "Templates", "Locks", "Policies"],
+            answer: [0], // Correct answer: "Tags"
+            explanation: "You can use resource tags to label Azure resources and generate reports based on tags."
+        },
+        {
+            question: "If an Azure resource becomes unavailable for an extended period due to a service outage, what will Microsoft do?",
+            type: "single", // Single answer
+            options: [
+                "Automatically refund your bank account",
+                "Automatically migrate the resource to another subscription",
+                "Automatically credit your account",
+                "Send you a coupon code for Azure credits"
+            ],
+            answer: [2], // Correct answer: "Automatically credit your account"
+            explanation: "Microsoft credits your account for unavailability according to SLA policies."
+        },
+        {
+            question: "Which Azure resource can be deployed as Infrastructure as a Service (IaaS)?",
+            type: "single",
+            options: [
+                "Azure SQL Database",
+                "Office 365",
+                "API Management",
+                "Virtual Machine (VM)"
+            ],
+            answer: [3], // Correct answer: "Virtual Machine (VM)"
+            explanation: "Virtual Machines are classified as IaaS because you manage the OS and patches."
+        },
+        {
+            question: "What should you use to ensure ongoing evaluation of non-compliant Azure resources?",
+            type: "single",
+            options: ["Azure Policies", "Azure Advisor", "RBAC", "Azure Monitor"],
+            answer: [0], // Correct answer: "Azure Policies"
+            explanation: "Azure Policies ensure compliance with standards by evaluating resources."
+        },
+        {
+            question: "To integrate apps, systems, and services across your company with serverless workflow orchestration, which Azure service should you use?",
+            type: "single",
+            options: ["Functions", "Apps Grid", "Logic Apps", "Bot Service"],
+            answer: [2], // Correct answer: "Logic Apps"
+            explanation: "Logic Apps enable serverless workflows for app integration."
+        },
+        {
+            question: "Which type of data collection in Azure Monitor requires enabling diagnostics?",
+            type: "single",
+            options: [
+                "Linux Virtual Machine health",
+                "Container workload performance",
+                "Usage of Web applications"
+            ],
+            answer: [1], // Correct answer: "Container workload performance"
+            explanation: "Enabling diagnostics is required for container workload performance."
+        },
+        {
+            question: "Which Azure service uses autoscale to minimize costs and optimize performance?",
+            type: "single",
+            options: [
+                "Azure Service Health",
+                "Azure Security Center",
+                "Azure Monitor",
+                "Azure Advisor"
+            ],
+            answer: [2], // Correct answer: "Azure Monitor"
+            explanation: "Azure Monitor uses autoscale to adjust resources based on performance and cost."
+        },
+        {
+            question: "What is guaranteed in an Azure Service Level Agreement (SLA)?",
+            type: "single",
+            options: ["Uptime", "Feature availability", "Bandwidth", "Performance"],
+            answer: [0], // Correct answer: "Uptime"
+            explanation: "SLAs guarantee uptime depending on the service and deployment model."
+        },
+        {
+            question: "How long before Microsoft retires a guest operating system (OS) in Azure?",
+            type: "single",
+            options: ["12 months", "6 months", "60 days", "24 months"],
+            answer: [3], // Correct answer: "24 months"
+            explanation: "Microsoft gives a 24-month notice before retiring a guest OS."
+        },
+        // Existing questions
+        {
+            question: "Which Azure Resource Manager feature should you use before generating billing reports for each office?",
+            type: "single",
+            options: ["Tags", "Templates", "Locks", "Policies"],
+            answer: [0],
+            explanation: "You can use resource tags to label Azure resources and generate reports based on tags."
+        },
+        {
+            question: "If an Azure resource becomes unavailable for an extended period due to a service outage, what will Microsoft do?",
+            type: "single",
+            options: [
+                "Automatically refund your bank account",
+                "Automatically migrate the resource to another subscription",
+                "Automatically credit your account",
+                "Send you a coupon code for Azure credits"
+            ],
+            answer: [2],
+            explanation: "Microsoft credits your account for unavailability according to SLA policies."
+        },
+        // ... other existing questions
+
+        // New question
+        {
+            question: "A company is planning on setting up a solution in Azure with an integration solution for the deployment of code. Which of the following would be best suited for this requirement?",
+            type: "single",
+            options: [
+                "Azure Advisor",
+                "Azure Cognitive Services",
+                "Azure Application Insights",
+                "Azure DevOps"
+            ],
+            answer: [3], // Correct answer: "Azure DevOps"
+            explanation: "Azure DevOps provides a set of tools for managing code deployment and continuous integration/continuous delivery."
+        },
+
+        {
+            question: "A company wants to deploy an application to Azure. The application has the below requirements:\n- Give the ability to install and provide access to the full .Net framework\n- Allow administrative access to the operating system\n- Provide a level of redundancy if an Azure region fails\nYou decide to deploy 2 Azure Virtual Machines in 2 separate regions. And then you create a Traffic Manager Profile\nDoes this solution meet the requirement?",
+            type: "single",
+            options: ["Yes", "No"],
+            answer: [0],
+            explanation: "Yes, this will meet all the requirements. Since you are using Azure Virtual Machines, IT administrators can get the required access. You can also then get the required access to the underlying software including the .Net framework. Using a Traffic Manager profile along with the failover routing policy can ensure the requirement for redundancy is fulfilled."
+        },
+
+        {
+            question: "A team has an Azure CosmosDB account. A solution needs to be in place to generate an alert from Azure Log Analytics when a query request charge exceeds 40 units more than 10 times during a 10-minute window. Which of the following would you recommend? (Choose two)",
+            type: "multiple",
+            options: [
+                "Create a search query to identify when the requestCharge_s exceeds 40.",
+                "Create a search query to identify when the requestCharge_s exceeds 10.",
+                "Create a search query to identify when the duration_s exceeds 10.",
+                "Configure a period of 10 and a frequency of 10."
+            ],
+            answer: [0, 3],
+            explanation: "To track when the request charge exceeds 40, and to set up a period and frequency to generate alerts."
+        },
+
+        {
+            question: "Our team needs to deploy a Virtual machine that will host a SQL Server. The Virtual machine will have 2 data disks, one for the log file and the other for the data files. You need to recommend a caching policy for each disk. Which of the following would you recommend for the data disk containing the logs?",
+            type: "single",
+            options: ["None", "ReadOnly", "WriteOnly", "ReadWrite"],
+            answer: [0],
+            explanation: "For a data disk containing SQL Server logs, no caching is recommended as it can affect database performance."
+        },
+
+        {
+            question: "A company has setup an Azure subscription and an Azure tenant. You need to provide the development team to be able to start and stop Virtual Machines. The access needs to be granted on specific occasions only. You need to ensure the permission gets assigned and use the principle of least privilege. You also need to minimize costs. Which of the following security feature would you use for the requirement?",
+            type: "single",
+            options: [
+                "Conditional Access policy",
+                "Azure Policies",
+                "Just in time VM access",
+                "Privileged Identity Management"
+            ],
+            answer: [2],
+            explanation: "Just in time VM access through Privileged Identity Management ensures minimal and temporary access, reducing security risks."
+        },
+
+        {
+            question: "A company has deployed several applications across Windows and Linux Virtual machines in Azure. Log Analytics are being used to send the required data for alerting purposes for the Virtual Machines. You need to recommend which tables need to be queried for security related queries. Which of the following would you query for events from Windows Event Logs?",
+            type: "single",
+            options: ["Azure Activity", "Azure Diagnostics", "Event", "Syslog"],
+            answer: [2],
+            explanation: "The 'Event' table contains Windows Event Log data which is essential for querying security-related events."
+        },
+
+        {
+            question: "A company has the following on-premise data stores:\n- A Microsoft SQL Server 2012 database\n- A Microsoft SQL Server 2008 database\n- The data needs to be migrated to Azure\nRequirement 1 - The data in the Microsoft SQL Server 2012 database needs to be migrated to an Azure SQL database\nRequirement 2 - The data in a table in the Microsoft SQL Server 2008 database needs to be migrated to an Azure CosmosDB account that uses the SQL API\nWhich of the following should be used to accomplish Requirement 2?",
+            type: "single",
+            options: ["AzCopy", "Azure CosmosDB Data Migration tool", "Data Management Gateway", "Data Migration Assistant"],
+            answer: [1],
+            explanation: "The Azure CosmosDB Data Migration tool helps to migrate data to Azure CosmosDB from SQL Server."
+        },
+
+        {
+            question: "A company is planning on deploying an Azure Web App to 2 regions. One of the key requirements is to ensure that the web app is always running if an Azure region fails. You need to ensure deployment costs are minimized. Which of the following service would you include in the deployment of the solution?",
+            type: "single",
+            options: [
+                "Azure Functions",
+                "Azure Traffic Manager",
+                "Azure Application Gateway",
+                "Azure Load Balancer"
+            ],
+            answer: [1],
+            explanation: "Azure Traffic Manager helps route traffic to available regions and minimizes the deployment cost by avoiding redundant resources in multiple regions."
+        },
+
+        {
+            question: "A company has deployed several applications across Windows and Linux Virtual machines in Azure. Log Analytics are being used to send the required data for alerting purposes for the Virtual Machines. You need to recommend which tables need to be queried for security related queries. Which of the following would you query for events from Linux system logging?",
+            type: "single",
+            options: ["Azure Activity", "Azure Diagnostics", "Event", "Syslog"],
+            answer: [3],
+            explanation: "The 'Syslog' table stores Linux system log data and should be queried for security events."
+        },
+        {
+            question: "A company is planning on deploying a stateless-based application based on microservices using the Azure Service Fabric service. You need to design the infrastructure that would be required in the Azure Service Fabric service. Which of the following should you consider? (Choose two)",
+            type: "multiple",
+            options: ["The number of node types in the cluster", "The properties for each node type", "The network connectivity", "The service tier"],
+            answer: [0, 1],
+            explanation: "The number of node types and the properties for each node type are important considerations when designing a Service Fabric cluster."
+        },
+
+        {
+            question: "Which cloud deployment solution is used for Azure virtual machines and Azure SQL databases?\nTo answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+            type: "dropdown",
+            answerArea: [
+                {
+                    box: "Box 1",
+                    options: ["Infrastructure as a Service (IaaS)", "Platform as a Service (PaaS)", "Software as a Service (SaaS)"],
+                    answer: "Infrastructure as a Service (IaaS)"
+                },
+                {
+                    box: "Box 2",
+                    options: ["Infrastructure as a Service (IaaS)", "Platform as a Service (PaaS)", "Software as a Service (SaaS)"],
+                    answer: "Platform as a Service (PaaS)"
+                }
+            ],
+            explanation: "Azure virtual machines are Infrastructure as a Service (IaaS), and Azure SQL databases are Platform as a Service (PaaS)."},
+
+
+
+        {
+            question: "Which cloud deployment solution is used for Azure virtual machines and Azure SQL databases?\nTo answer, select the appropriate options in the answer area.\nNOTE: Each correct selection is worth one point.",
+            type: "dropdown",
+            answerArea: [
+                {
+                    box: "Box 1",
+                    options: ["Infrastructure as a Service (IaaS)", "Platform as a Service (PaaS)", "Software as a Service (SaaS)"],
+                    answer: "Infrastructure as a Service (IaaS)"
+                },
+                {
+                    box: "Box 2",
+                    options: ["Infrastructure as a Service (IaaS)", "Platform as a Service (PaaS)", "Software as a Service (SaaS)"],
+                    answer: "Platform as a Service (PaaS)"
+                }
+            ],
+            explanation: "Azure virtual machines are Infrastructure as a Service (IaaS), and Azure SQL databases are Platform as a Service (PaaS)."
+        },
+        {
+            question: "Is it true that a company must always migrate from a private cloud model to implement a hybrid cloud?",
+            type: "dropdown",
+            answerArea: [
+                {
+                    box: "Box 1",
+                    options: ["Yes", "No"],
+                    answer: "No"
+                }
+            ],
+            explanation: "It is not true that a company must always migrate from a private cloud model to implement a hybrid cloud. You could start with a public cloud and then combine it with an on-premise infrastructure."
+        },
+
+        {
+            question: "Can a company extend the capacity of its internal network by using the public cloud?",
+            type: "dropdown",
+            answerArea: [
+                {
+                    box: "Box 2",
+                    options: ["Yes", "No"],
+                    answer: "Yes"
+                }
+            ],
+            explanation: "A company can extend the capacity of its internal network by using the public cloud. This is common, where a VPN is configured to connect on-premise infrastructure to the cloud."
+        },
+        {
+            question: "Is it true that only guest users can access cloud resources?",
+            type: "dropdown",
+            answerArea: [
+                {
+                    box: "Box 3",
+                    options: ["Yes", "No"],
+                    answer: "No"
+                }
+            ],
+            explanation: "It is not true that only guest users can access cloud resources. Users with Azure Active Directory accounts can access cloud resources."
+        },
+
+        {
+            question: "Match the Azure Cloud Services benefit to the correct description.",
+            type: "match",
+            answerArea: [
+                {
+                    box: "Box 1",
+                    benefit: "Fault tolerance",
+                    description: "The ability of a service to remain available after a failure of one of the components of the service."
+                },
+                {
+                    box: "Box 2",
+                    benefit: "Disaster recovery",
+                    description: "The recovery of a service after a failure, such as restoring a virtual machine from backup."
+                },
+                {
+                    box: "Box 3",
+                    benefit: "Dynamic scalability",
+                    description: "The ability to add compute resources to a service when under heavy load, such as adding virtual machine instances."
+                }
+            ],
+            explanation: "Fault tolerance means the service can withstand failures, disaster recovery refers to restoring services, and dynamic scalability adds resources when needed."
+        }
+
+    ];
+
+    let shuffledQuestions = [];
+
+    function shuffleQuestions() {
+        shuffledQuestions = [...questions];
+        for (let i = shuffledQuestions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledQuestions[i], shuffledQuestions[j]] = [shuffledQuestions[j], shuffledQuestions[i]];
+        }
+    }
+
+
+    let currentScore = 0;
+
+    function loadQuestions() {
+        const container = document.getElementById("question-container");
+        container.innerHTML = "";
+
+        questions.forEach((q, index) => {
+            // Create question title
+            const questionTitle = document.createElement("h2");
+            questionTitle.className = "text-lg font-semibold text-gray-800 mb-3";
+            questionTitle.textContent = `${index + 1}. ${q.question}`;
+            container.appendChild(questionTitle);
+
+            // Create options
+            const optionsContainer = document.createElement("div");
+            optionsContainer.className = "mb-4";
+            q.options.forEach((option, i) => {
+                const optionWrapper = document.createElement("div");
+                optionWrapper.className = "form-check mb-2";
+
+                const input = document.createElement("input");
+                input.type = q.type === "single" ? "radio" : "checkbox";
+                input.name = `question-${index}`;
+                input.value = i;
+                input.id = `q${index}-o${i}`;
+                input.className = "form-check-input";
+
+                const label = document.createElement("label");
+                label.htmlFor = `q${index}-o${i}`;
+                label.className = "form-check-label";
+                label.textContent = option;
+
+                optionWrapper.appendChild(input);
+                optionWrapper.appendChild(label);
+                optionsContainer.appendChild(optionWrapper);
+            });
+
+            container.appendChild(optionsContainer);
+        });
+    }
+    // Show explanations for correct answers
+    function showExplanations() {
+        questions.forEach((q, index) => {
+            const explanation = document.createElement("p");
+            explanation.className = "text-sm text-gray-600 mt-2";
+            explanation.textContent = `Explanation: ${q.explanation}`;
+            const questionElement = document.querySelector(`#question-container > div:nth-child(${index + 1})`);
+            questionElement.appendChild(explanation);
+        });
+    }
+
+    document.getElementById("submit-btn").addEventListener("click", () => {
+        calculateScore();
+        showExplanations();
+    });
+
+
+
+    function calculateScore() {
+        currentScore = 0;
+
+        questions.forEach((q, index) => {
+            const selected = Array.from(
+                document.querySelectorAll(`input[name="question-${index}"]:checked`)
+            ).map((input) => parseInt(input.value));
+
+            // Highlight options
+            q.options.forEach((_, i) => {
+                const label = document.querySelector(`label[for="q${index}-o${i}"]`);
+                if (q.answer.includes(i)) {
+                    // Correct answer
+                    label.classList.add("text-green-500", "font-bold");
+                } else {
+                    // Wrong answer
+                    if (selected.includes(i)) {
+                        label.classList.add("text-red-500", "font-bold");
+                    }
+                }
+            });
+
+            // Check if the selected answers match the correct answers
+            if (
+                selected.length === q.answer.length &&
+                selected.every((val) => q.answer.includes(val))
+            ) {
+                currentScore++;
+            }
+        });
+
+        // Show score
+        document.getElementById("score").textContent = `${currentScore}/${questions.length}`;
+        document.getElementById("result").classList.remove("hidden");
+    }
+
+    document.getElementById("submit-btn").addEventListener("click", calculateScore);
+
+    // Load questions on page load
+    document.addEventListener("DOMContentLoaded", loadQuestions);
+
+</script>
+</body>
+</html>
+
